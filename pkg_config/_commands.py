@@ -4,6 +4,7 @@ import glob
 import os
 
 from pkg_config._models import PackageInfo
+from pkg_config.errors import PCFileNotFound
 
 
 def walk_directories(directories):
@@ -38,4 +39,4 @@ def find_pc_file(directories, name):
         if parse_name_from_file(p) == name:
             return p
 
-    raise RuntimeError(name)
+    raise PCFileNotFound(name)

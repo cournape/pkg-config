@@ -3,6 +3,7 @@ from __future__ import print_function
 import argparse
 import sys
 
+from pkg_config.errors import PCFileNotFound
 from pkg_config._commands import find_pc_file, list_all
 from pkg_config._models import PackageInfo
 
@@ -53,7 +54,21 @@ def main(argv=None):
         list_all(SEARCH_DIRECTORIES)
         sys.exit(0)
 
-    p = find_pc_file(SEARCH_DIRECTORIES, namespace.pc_file)
+    if namespace.pc_file is None:
+        print(u"Must specify package names on the command line")
+        sys.exit(0)
+
+    try:
+        p = find_pc_file(SEARCH_DIRECTORIES, namespace.pc_file)
+    except PCFileNotFound:
+        print(
+            u"Package tls was not found in the pkg-config search path.\n"
+             "Perhaps you should add the directory containing `{0}.pc'\n"
+             "to the PKG_CONFIG_PATH environment variable\n"
+             "No package '{0}' found".format(namespace.pc_file)
+        )
+        sys.exit(1)
+
     pkg_info = PackageInfo.from_path(p)
 
     if namespace.cflags:
