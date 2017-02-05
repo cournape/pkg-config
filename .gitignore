@@ -1,0 +1,7 @@
+build
+dist
+pkg_config.egg-info/
+.coverage
+
+*.*.swp
+*.*.pyc
